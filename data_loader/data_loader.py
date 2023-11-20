@@ -1,5 +1,6 @@
 import os.path
 import typing
+import requests
 
 import yfinance as yf
 import pandas as pd
@@ -30,3 +31,10 @@ class DataLoader:
         os.makedirs(os.path.dirname(filename), exist_ok=True)
         # Save the data to a CSV file
         data.to_csv(filename)
+
+    @staticmethod
+    def fetch_nasdaq_100_list():
+        url = "https://finance.yahoo.com/quote/%5ENDX/components/"
+        response = requests.get(url)
+        nasdaq_table = pd.read_html(response.text)[0]
+        return nasdaq_table
