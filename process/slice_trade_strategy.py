@@ -1,5 +1,6 @@
 import os.path
 
+from process.data_loader import DataLoader
 from strategy.slice_trader import SliceTrader
 
 slices = {
@@ -23,8 +24,9 @@ slices = {
     ]
 }
 
-# data_loader = DataLoader()
-# data_loader.load_tickers(slice_tickers)
+data_loader = DataLoader()
+for key, value in slices.items():
+    data_loader.load_tickers(value)
 
 slice_trader = SliceTrader()
 for key, value in slices.items():

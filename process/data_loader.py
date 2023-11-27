@@ -19,7 +19,8 @@ class DataLoader:
 
             adjusted_last_date = last_date - pd.Timedelta(days=5)
             new_data = yf.download(ticker, start=adjusted_last_date)
-            combined_data = pd.concat([existing_data, new_data]).drop_duplicates()
+            combined_data = pd.concat([existing_data, new_data])
+            combined_data = combined_data[~combined_data.index.duplicated(keep='last')]
         else:
             new_data = yf.download(ticker, start=start_date)
             combined_data = new_data

@@ -18,7 +18,6 @@ class DataAccess:
                 print(f"Duplicate indices found in {ticker}. Handling duplicates.")
                 # Choose a method to handle duplicates, for example, dropping them
                 data = data[~data.index.duplicated(keep='first')]
-
             data_frames.append(data)
 
         price_data = pd.concat(data_frames, axis=1)
