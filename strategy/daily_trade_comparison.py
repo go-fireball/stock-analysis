@@ -1,29 +1,17 @@
 import pandas as pd
 
+from data_access.data_access import DataAccess
+
 
 class DailyTrader:
-    def calculate_strategy(self, tickers, daily_investment: int):
-        price_data = self.__load_price(tickers)
+    def __init__(self):
+        self.__data_access = DataAccess()
+
+    def calculate_strategy(self, tickers, daily_investment: int, start_date: str = '01/01/2010'):
+        price_data = self.__data_access.load_price(tickers, start_date)
         combined_data = self.__calculate_investment(price_data, tickers, daily_investment)
         comparison_data = self.__save_profit_percent_to_excel(combined_data)
         return comparison_data
-
-    @staticmethod
-    def __load_price(tickers) -> pd.DataFrame:
-        price_data = pd.DataFrame()
-
-        for ticker in tickers:
-            filename = 'data/' + ticker + '.csv'
-            data = pd.read_csv(filename, index_col=0, parse_dates=True, usecols=["Date", "High"])
-            data.rename(columns={"High": ticker}, inplace=True)
-
-            if price_data.empty:
-                price_data = data
-            else:
-                # Merge the data on the Date index
-                price_data = price_data.join(data, how='outer')
-
-        return price_data
 
     @staticmethod
     def __calculate_investment(price_data, tickers, daily_investment: int) -> pd.DataFrame:

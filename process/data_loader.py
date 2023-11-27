@@ -1,9 +1,8 @@
 import os.path
 import typing
-import requests
 
-import yfinance as yf
 import pandas as pd
+import yfinance as yf
 
 
 class DataLoader:
@@ -24,6 +23,9 @@ class DataLoader:
         else:
             new_data = yf.download(ticker, start=start_date)
             combined_data = new_data
+
+        combined_data.sort_index(inplace=True)
+        combined_data['High_STD'] = combined_data['High'].rolling(window=len(combined_data), min_periods=1).std()
         self.save_data(combined_data, filename)
 
     @staticmethod
@@ -31,10 +33,3 @@ class DataLoader:
         os.makedirs(os.path.dirname(filename), exist_ok=True)
         # Save the data to a CSV file
         data.to_csv(filename)
-
-    @staticmethod
-    def fetch_nasdaq_100_list():
-        url = "https://finance.yahoo.com/quote/%5ENDX/components/"
-        response = requests.get(url)
-        nasdaq_table = pd.read_html(response.text)[0]
-        return nasdaq_table
