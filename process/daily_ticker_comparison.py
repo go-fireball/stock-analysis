@@ -10,10 +10,9 @@ slice_tickers = [
     'KLAC',
     'MSFT',
     'NVDA',
-    'TSLA',
-    'META',
-    'UNH',
-    'AVGO',
+    'LLY',
+    'MA',
+    'V'
 ]
 data_loader = DataLoader()
 data_loader.load_tickers(slice_tickers)

@@ -23,8 +23,21 @@ class SliceTrader:
         rolling_sharpe_ratio = (rolling_mean_return - risk_free_rate) / rolling_std_dev
         rolling_sharpe_ratio[rolling_std_dev == 0] = None
 
+        returns = portfolio_data['Total', 'Value'] / (portfolio_data['Total', 'Cost'].shift(
+            1) + daily_investment) - 1
+        excess_returns = returns - risk_free_rate
+
+        negative_excess_returns = excess_returns.loc[excess_returns < 0]
+        rolling_negative_std_dev = negative_excess_returns.rolling(window=rolling_window).std()
+        rolling_mean_excess_return = excess_returns.rolling(window=rolling_window).mean()
+        rolling_sortino_ratio = rolling_mean_excess_return / rolling_negative_std_dev
+        mask = (rolling_negative_std_dev == 0).reindex(rolling_sortino_ratio.index, fill_value=False)
+        rolling_sortino_ratio[mask] = None
+
         portfolio_data['Total', 'TotalReturn'] = total_return
         portfolio_data['Total', 'SharpRation'] = rolling_sharpe_ratio
+        portfolio_data['Total', 'SortinoRatio'] = rolling_sortino_ratio
+
         return portfolio_data
 
     @staticmethod

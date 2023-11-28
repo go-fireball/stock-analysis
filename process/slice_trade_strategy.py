@@ -21,17 +21,28 @@ slices = {
         'NVDA',
         'AVGO',
         'QCOM'
+    ],
+    'diversified': [
+        'AAPL',
+        'AMZN',
+        'GOOG',
+        'KLAC',
+        'MSFT',
+        'NVDA',
+        'LLY',
+        'MA',
+        'V'
     ]
 }
 
-data_loader = DataLoader()
-for key, value in slices.items():
-    data_loader.load_tickers(value)
+# data_loader = DataLoader()
+# for key, value in slices.items():
+#     data_loader.load_tickers(value)
 
 slice_trader = SliceTrader()
 for key, value in slices.items():
     data = slice_trader.calculate_strategy(tickers=value, daily_investment=100, start_date='1/1/2015'
-                                           , rolling_window=30)
+                                           , rolling_window=200)
 
     strategy_name = key
     target_file = 'data/temp/' + strategy_name + '_investment.xlsx'
