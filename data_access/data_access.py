@@ -4,13 +4,13 @@ import pandas as pd
 class DataAccess:
 
     @staticmethod
-    def load_price(tickers, start_date: str = '01/01/2010') -> pd.DataFrame:
+    def load_price(tickers, price: str = "High", start_date: str = '01/01/2010') -> pd.DataFrame:
         data_frames = []
 
         for ticker in tickers:
             filename = 'data/' + ticker + '.csv'
-            data = pd.read_csv(filename, index_col=0, parse_dates=True, usecols=["Date", "High"])
-            data.rename(columns={"High": ticker}, inplace=True)
+            data = pd.read_csv(filename, index_col=0, parse_dates=True, usecols=["Date", price])
+            data.rename(columns={price: ticker}, inplace=True)
             data = data[data.index >= pd.to_datetime(start_date)]
 
             # Check for duplicate indices and handle them

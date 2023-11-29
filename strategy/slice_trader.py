@@ -8,9 +8,17 @@ class SliceTrader:
         self.__data_access = DataAccess()
 
     def calculate_strategy(self, tickers, daily_investment: int, start_date: str = '01/01/2010', rolling_window=30):
-        adj_close_data = self.__data_access.load_price(tickers, start_date)
+        adj_close_data = self.__data_access.load_price(tickers, start_date=start_date)
         portfolio_data = self.__calculate_investment(adj_close_data, tickers, daily_investment)
-        return self.__calculate_risk(portfolio_data, daily_investment, rolling_window)
+        analysis_data = self.__calculate_risk(portfolio_data, daily_investment, rolling_window)
+        analysis_data['Slice', 'Index'] = self.__calculate_index(adj_close_data)
+        return analysis_data
+
+    @staticmethod
+    def __calculate_index(adj_close_data: pd.DataFrame) -> pd.DataFrame:
+        normalized_data = (adj_close_data / adj_close_data.iloc[0])
+        equal_weighted_index = normalized_data.mean(axis=1) * 100
+        return equal_weighted_index
 
     @staticmethod
     def __calculate_risk(portfolio_data, daily_investment, rolling_window) -> pd.DataFrame:
@@ -34,9 +42,9 @@ class SliceTrader:
         mask = (rolling_negative_std_dev == 0).reindex(rolling_sortino_ratio.index, fill_value=False)
         rolling_sortino_ratio[mask] = None
 
-        portfolio_data['Total', 'TotalReturn'] = total_return
-        portfolio_data['Total', 'SharpRation'] = rolling_sharpe_ratio
-        portfolio_data['Total', 'SortinoRatio'] = rolling_sortino_ratio
+        portfolio_data['Slice', 'TotalReturn'] = total_return
+        portfolio_data['Slice', 'SharpRation'] = rolling_sharpe_ratio
+        portfolio_data['Slice', 'SortinoRatio'] = rolling_sortino_ratio
 
         return portfolio_data
 

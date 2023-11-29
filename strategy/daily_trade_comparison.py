@@ -8,7 +8,7 @@ class DailyTrader:
         self.__data_access = DataAccess()
 
     def calculate_strategy(self, tickers, daily_investment: int, start_date: str = '01/01/2010'):
-        price_data = self.__data_access.load_price(tickers, start_date)
+        price_data = self.__data_access.load_price(tickers, start_date=start_date)
         combined_data = self.__calculate_investment(price_data, tickers, daily_investment)
         comparison_data = self.__save_profit_percent_to_excel(combined_data)
         return comparison_data
