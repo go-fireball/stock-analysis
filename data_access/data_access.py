@@ -8,7 +8,7 @@ class DataAccess:
         data_frames = []
 
         for ticker in tickers:
-            filename = 'data/' + ticker + '.csv'
+            filename = 'data/raw/' + ticker + '.csv'
             data = pd.read_csv(filename, index_col=0, parse_dates=True, usecols=["Date", price])
             data.rename(columns={price: ticker}, inplace=True)
             data = data[data.index >= pd.to_datetime(start_date)]

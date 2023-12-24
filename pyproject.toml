@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "stock-loader"
+name = "stock-analysis"
 version = "0.1.0"
 description = ""
 authors = ["venkat sundaram"]
@@ -9,6 +9,8 @@ readme = "README.md"
 python = "^3.10"
 yfinance = "^0.2.31"
 openpyxl = "^3.1.2"
+arch = "^6.2.0"
+pandas-market-calendars = "^4.3.2"
 
 
 [build-system]
