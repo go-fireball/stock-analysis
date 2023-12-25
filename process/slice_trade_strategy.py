@@ -52,10 +52,11 @@ data_loader.load_tickers(list(tickerSet))
 
 slice_trader = SliceTrader()
 for key, value in slices.items():
-    data = slice_trader.calculate_strategy(tickers=value, daily_investment=100, start_date='11/15/2023'
+    data = slice_trader.calculate_strategy(tickers=value, daily_investment=100, start_date='1/1/2020'
                                            , rolling_window=200)
 
     strategy_name = key
     target_file = 'data/temp/' + strategy_name + '_investment.xlsx'
     os.makedirs(os.path.dirname(target_file), exist_ok=True)
     data.to_excel(target_file, engine='openpyxl')
+print('Process Completed')
