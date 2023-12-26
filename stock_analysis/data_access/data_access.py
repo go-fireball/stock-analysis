@@ -4,7 +4,7 @@ import pandas as pd
 class DataAccess:
 
     @staticmethod
-    def load_price(tickers, price: str = "High", start_date: str = '01/01/2010') -> pd.DataFrame:
+    def load_price(tickers, price: str = "High", start_date: str = 'max') -> pd.DataFrame:
         data_frames = []
 
         for ticker in tickers:

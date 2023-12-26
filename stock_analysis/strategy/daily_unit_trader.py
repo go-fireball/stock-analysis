@@ -18,7 +18,7 @@ class DailyUnitTrader:
         data_frames = []
 
         for ticker in tickers:
-            units = round(price_data[ticker] / price_data[ticker] * daily_units, 1)  # Number of units bought daily
+            units = pd.Series(index=price_data.index, dtype=float).fillna(1)
             daily_cost = round(units * price_data[ticker], 2)
             ticker_data = pd.DataFrame({
                 (ticker, 'Price'): round(price_data[ticker], 4),
@@ -44,4 +44,3 @@ class DailyUnitTrader:
                                   combined_data[(ticker, 'Total Cost')] * 100
             comparison_data[ticker] = profit_percent_data  # Adding to the comparison DataFrame
         return comparison_data
-

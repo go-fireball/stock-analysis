@@ -13,8 +13,8 @@ class DataLoader:
             self.load_historical(ticker)
 
     def load_historical(self, ticker: str):
-        start_date = "2010-01-01"
-        filename = 'data/raw/' + ticker + '.csv'
+        start_date = "1960-01-01"
+        filename = 'data/raw/{0}.csv'.format(ticker)
         if os.path.exists(filename):
             existing_data = pd.read_csv(filename, index_col=0, parse_dates=True)
             last_date = existing_data.index[-1]

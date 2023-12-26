@@ -1,6 +1,6 @@
 [
   {
-    "name": "tech",
+    "name": "tech6",
     "tickers": [
       "AAPL",
       "AMZN",
@@ -8,6 +8,15 @@
       "MSFT",
       "KLAC",
       "NVDA"
+    ]
+  },
+  {
+    "name": "tech4",
+    "tickers": [
+      "AAPL",
+      "AMZN",
+      "GOOG",
+      "MSFT"
     ]
   }
 ]
