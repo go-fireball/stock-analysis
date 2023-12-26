@@ -26,7 +26,7 @@ slice_trader = SliceTrader()
 for individualSlice in slices:
     data = slice_trader.calculate_strategy(tickers=individualSlice.tickers, daily_investment=100, start_date='1/1/2020'
                                            , rolling_window=200)
-    target_file = 'data/temp/' + individualSlice.name + '_investment.xlsx'
+    target_file = 'data/temp/' + individualSlice.name + '_slice.xlsx'
     os.makedirs(os.path.dirname(target_file), exist_ok=True)
     data.to_excel(target_file, engine='openpyxl')
 print('Process Completed')
