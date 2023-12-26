@@ -1,7 +1,7 @@
 import os.path
 
-from process.data_loader import DataLoader
-from strategy.daily_trade_comparison import DailyUnitTrader
+from stock_analysis.process.data_loader import DataLoader
+from stock_analysis.strategy.daily_unit_trader import DailyUnitTrader
 
 slice_tickers = [
     'AAPL',
