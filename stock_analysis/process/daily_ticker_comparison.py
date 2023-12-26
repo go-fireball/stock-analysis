@@ -1,7 +1,8 @@
-from process.data_loader import DataLoader
+
 import os.path
 
-from strategy.daily_trade_comparison import DailyTrader
+from stock_analysis.process.data_loader import DataLoader
+from stock_analysis.strategy.daily_trader import DailyTrader
 
 slice_tickers = [
     'AAPL',
@@ -24,6 +25,7 @@ slice_tickers = [
     'DXQLX',
 
 ]
+
 data_loader = DataLoader()
 data_loader.load_tickers(slice_tickers)
 

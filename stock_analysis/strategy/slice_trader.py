@@ -1,6 +1,6 @@
 import pandas as pd
 
-from data_access.data_access import DataAccess
+from stock_analysis.data_access.data_access import DataAccess
 
 
 class SliceTrader:

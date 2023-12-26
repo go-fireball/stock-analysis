@@ -2,16 +2,15 @@
 name = "stock-analysis"
 version = "0.1.0"
 description = ""
-authors = ["venkat sundaram"]
+authors = ["Your Name <you@example.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.12"
 yfinance = "^0.2.31"
 openpyxl = "^3.1.2"
 arch = "^6.2.0"
 pandas-market-calendars = "^4.3.2"
-
 
 [build-system]
 requires = ["poetry-core"]

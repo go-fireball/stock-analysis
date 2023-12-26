@@ -1,7 +1,7 @@
 import os.path
 
-from process.data_loader import DataLoader
-from strategy.slice_trader import SliceTrader
+from stock_analysis.process.data_loader import DataLoader
+from stock_analysis.strategy.slice_trader import SliceTrader
 
 slices = {
     'six': [
