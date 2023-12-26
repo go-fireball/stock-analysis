@@ -1,36 +1,18 @@
-
+import json
 import os.path
 
 from stock_analysis.process.data_loader import DataLoader
 from stock_analysis.strategy.daily_trader import DailyTrader
 
-slice_tickers = [
-    'AAPL',
-    'AMZN',
-    'GOOG',
-    'KLAC',
-    'MSFT',
-    'NVDA',
-
-    'AVGO',
-    'QCOM',
-    'UBER',
-    'TSLA',
-
-    'QQQ',
-    'TECL',
-    'TQQQ',
-    'SPY',
-
-    'DXQLX',
-
-]
+file_path = './stock_analysis/config/tickers.json'
+with open(file_path, 'r') as file:
+    tickers = json.load(file)
 
 data_loader = DataLoader()
-data_loader.load_tickers(slice_tickers)
+data_loader.load_tickers(tickers)
 
 daily_trader = DailyTrader()
-data = daily_trader.calculate_strategy(tickers=slice_tickers, daily_investment=100, start_date='1/1/2010')
+data = daily_trader.calculate_strategy(tickers=tickers, daily_investment=100, start_date='1/1/2010')
 strategy_name = 'selected_comparison'
 target_file = 'data/temp/' + strategy_name + '_investment.xlsx'
 os.makedirs(os.path.dirname(target_file), exist_ok=True)
