@@ -1,15 +1,13 @@
 [
   {
-    "name": "ai-slice",
+    "name": "tech",
     "tickers": [
       "AAPL",
       "AMZN",
       "GOOG",
-      "KLAC",
       "MSFT",
-      "NVDA",
-      "AVGO",
-      "QCOM"
+      "KLAC",
+      "NVDA"
     ]
   }
 ]
