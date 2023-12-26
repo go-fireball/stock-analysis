@@ -1,35 +1,15 @@
-{
-  "ai-slice": [
-    "AAPL",
-    "AMZN",
-    "GOOG",
-    "KLAC",
-    "MSFT",
-    "NVDA",
-    "AVGO",
-    "QCOM"
-  ],
-  "diversified": [
-    "AAPL",
-    "AMZN",
-    "GOOG",
-    "KLAC",
-    "MSFT",
-    "NVDA",
-    "UBER",
-    "AVGO",
-    "TSLA",
-    "META"
-  ],
-  "six": [
-    "AAPL",
-    "AMZN",
-    "GOOG",
-    "KLAC",
-    "MSFT",
-    "NVDA"
-  ],
-  "sp500": [
-    "^GSPC"
-  ]
-}
+[
+  {
+    "name": "ai-slice",
+    "tickers": [
+      "AAPL",
+      "AMZN",
+      "GOOG",
+      "KLAC",
+      "MSFT",
+      "NVDA",
+      "AVGO",
+      "QCOM"
+    ]
+  }
+]
