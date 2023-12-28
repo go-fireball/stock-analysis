@@ -18,5 +18,39 @@
       "GOOG",
       "MSFT"
     ]
+  },
+  {
+    "name": "brk",
+    "tickers": [
+      "BRK-B"
+    ]
+  },
+  {
+    "name": "industrial",
+    "tickers": [
+      "CAT",
+      "DE"
+    ]
+  },
+  {
+    "name": "food",
+    "tickers": [
+      "DPZ"
+    ]
+  },
+  {
+    "name": "diversified",
+    "tickers": [
+      "AAPL",
+      "AMZN",
+      "GOOG",
+      "KLAC",
+      "MSFT",
+      "NVDA",
+      "AVGO",
+      "LLY",
+      "MA",
+      "TSLA"
+    ]
   }
 ]

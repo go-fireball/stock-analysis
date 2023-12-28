@@ -1,14 +1,14 @@
 import os.path
 import json
 
-from stock_analysis.process.data_loader import DataLoader
+from stock_analysis.process.data_loader import RawDataLoader
 from stock_analysis.strategy.daily_unit_trader import DailyUnitTrader
 
 file_path = './stock_analysis/config/tickers.json'
 with open(file_path, 'r') as file:
     tickers = json.load(file)
 
-data_loader = DataLoader()
+data_loader = RawDataLoader()
 data_loader.load_tickers(tickers)
 
 daily_trader = DailyUnitTrader()

@@ -6,17 +6,25 @@ import pandas as pd
 import yfinance as yf
 from arch import arch_model
 
+from stock_analysis.config.config import Config
 
-class DataLoader:
+
+class RawDataLoader:
+
     def load_tickers(self, tickers: typing.List):
         for ticker in tickers:
-            self.load_historical(ticker)
+            raw_data = self.load_historical(ticker)
+            self.save_raw_data(raw_data, ticker)
+            derived_data = self.generate_derived_data(ticker)
+            self.save_derived_data(derived_data, ticker)
 
-    def load_historical(self, ticker: str):
+    @staticmethod
+    def load_historical(ticker: str) -> pd.DataFrame:
         start_date = "1960-01-01"
-        filename = 'data/raw/{0}.csv'.format(ticker)
-        if os.path.exists(filename):
-            existing_data = pd.read_csv(filename, index_col=0, parse_dates=True)
+        print('Downloading {0} Price Information'.format(ticker))
+        if os.path.exists(Config.raw_csv_path(ticker)):
+            existing_data = pd.read_csv(Config.raw_csv_path(ticker),
+                                        index_col=0, parse_dates=True)
             last_date = existing_data.index[-1]
 
             adjusted_last_date = last_date - pd.Timedelta(days=5)
@@ -26,24 +34,51 @@ class DataLoader:
         else:
             new_data = yf.download(ticker, start=start_date)
             combined_data = new_data
-
         combined_data.sort_index(inplace=True)
-        combined_data['High_STD'] = combined_data['High'].rolling(window=len(combined_data), min_periods=1).std()
-        combined_data['Return'] = combined_data['High'].pct_change()
-        combined_data['Actual_Volatility'] = combined_data['Return'].rolling(window=30).std()
+        return combined_data
 
-        garch = arch_model(combined_data['Return'].dropna(), vol="GARCH", p=1, q=1, rescale=False)
+    @staticmethod
+    def save_raw_data(data: pd.DataFrame, ticker: str):
+        os.makedirs(os.path.dirname(Config.raw_csv_path(ticker)), exist_ok=True)
+        data.to_csv(Config.raw_csv_path(ticker))
+        # data.to_json(self.raw_json_path(ticker))
+
+    @staticmethod
+    def save_derived_data(data: pd.DataFrame, ticker: str):
+        os.makedirs(os.path.dirname(Config.derived_csv_path(ticker)), exist_ok=True)
+        data.to_csv(Config.derived_csv_path(ticker))
+        data.to_json(Config.derived_json_path(ticker))
+
+    @staticmethod
+    def generate_derived_data(ticker) -> pd.DataFrame:
+        combined_data = pd.read_csv(Config.raw_csv_path(ticker), index_col=0, parse_dates=True)
+        combined_data.sort_index(inplace=True)
+        combined_data['Open'] = combined_data['Open'].round(4)
+        combined_data['High'] = combined_data['High'].round(4)
+        combined_data['Low'] = combined_data['Low'].round(4)
+        combined_data['Close'] = combined_data['Close'].round(4)
+        combined_data['Adj Close'] = combined_data['Adj Close'].round(4)
+        combined_data['MVA.20'] = combined_data['High'].rolling(window=30).mean().round(4)
+        combined_data['MVA.20'] = combined_data['High'].rolling(window=30).mean().round(4)
+        combined_data['MVA.30'] = combined_data['High'].rolling(window=30).mean().round(4)
+        combined_data['MVA.60'] = combined_data['High'].rolling(window=60).mean().round(4)
+        combined_data['MVA.90'] = combined_data['High'].rolling(window=90).mean().round(4)
+        combined_data['MVA.120'] = combined_data['High'].rolling(window=120).mean().round(4)
+        combined_data['MVA.180'] = combined_data['High'].rolling(window=180).mean().round(4)
+        combined_data['Std.2'] = combined_data['High'].rolling(window=2).std().round(4)
+        combined_data['Std.5'] = combined_data['High'].rolling(window=5).std().round(4)
+        combined_data['Std.30'] = combined_data['High'].rolling(window=30).std().round(4)
+
+        combined_data['Return.daily'] = round(combined_data['High'].pct_change(), 4)
+        combined_data['Actual_Volatility.30'] = combined_data['Return.daily'].rolling(window=30).std().round(4)
+
+        garch = arch_model(combined_data['Return.daily'].dropna(), vol="GARCH", p=1, q=1, rescale=False)
         res = garch.fit(disp='off')
-        forecast = res.forecast(horizon=30, start=start_date, align='target')
+        forecast = res.forecast(horizon=30, align='target')
         garch_volatility_series = pd.Series(np.nan, index=combined_data.index)
         forecast_dates = forecast.variance.dropna().index
         garch_volatility_series.loc[forecast_dates] = np.sqrt(forecast.variance.dropna()['h.21']) * np.sqrt(252)
-        combined_data['GARCH_Volatility'] = garch_volatility_series
-        self.save_data(combined_data, filename)
-
-    @staticmethod
-    def save_data(data: pd.DataFrame, filename: str):
-        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        combined_data['GARCH_Volatility.30'] = garch_volatility_series.round(4)
+        os.makedirs(os.path.dirname(Config.derived_json_path(ticker)), exist_ok=True)
         # Save the data to a CSV file
-        data.to_csv(filename)
-
+        return combined_data

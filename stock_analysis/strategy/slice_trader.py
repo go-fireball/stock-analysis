@@ -51,8 +51,8 @@ class SliceTrader:
         rolling_sortino_ratio[mask] = None
 
         portfolio_data['Slice', 'TotalReturn'] = total_return
-        portfolio_data['Slice', 'SharpRatio'] = rolling_sharpe_ratio
-        portfolio_data['Slice', 'SortinoRatio'] = rolling_sortino_ratio
+        portfolio_data['Slice', 'SharpRatio.{0}'.format(rolling_window)] = rolling_sharpe_ratio
+        portfolio_data['Slice', 'SortinoRatio.{0}'.format(rolling_window)] = rolling_sortino_ratio
 
         return portfolio_data
 
@@ -73,6 +73,11 @@ class SliceTrader:
             combined_data[(ticker, 'Units')] = round(units.cumsum(), 4)  # Cumulative sum of units over time
             combined_data[(ticker, 'Current Value')] = round(combined_data[(ticker, 'Units')] * adj_close_data[ticker],
                                                              4)
+
+            combined_data[(ticker, 'Profit')] = round(combined_data[(ticker, 'Current Value')] -
+                                                      combined_data[(ticker, 'Total Cost')], 2)
+            combined_data[(ticker, 'Profit_%')] = round(
+                combined_data[(ticker, 'Profit')] / combined_data[(ticker, 'Total Cost')]  * 100, 2)
             total_cost += daily_investment_per_ticker
             total_value += combined_data[(ticker, 'Current Value')]
 

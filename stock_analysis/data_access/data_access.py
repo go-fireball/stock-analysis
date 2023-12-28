@@ -1,5 +1,7 @@
 import pandas as pd
 
+from stock_analysis.config.config import Config
+
 
 class DataAccess:
 
@@ -8,7 +10,7 @@ class DataAccess:
         data_frames = []
 
         for ticker in tickers:
-            filename = 'data/raw/' + ticker + '.csv'
+            filename = Config.raw_csv_path(ticker)
             data = pd.read_csv(filename, index_col=0, parse_dates=True, usecols=["Date", price])
             data.rename(columns={price: ticker}, inplace=True)
             data = data[data.index >= pd.to_datetime(start_date)]
