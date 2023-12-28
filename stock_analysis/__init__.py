@@ -14,6 +14,7 @@ def dollar_averaging(daily_investment=100, start_date='1/1/2000'):
                                            start_date=start_date)
     target_file = 'data/temp/dollar_averaging.xlsx'
     os.makedirs(os.path.dirname(target_file), exist_ok=True)
+    print('writing file {0}'.format(target_file))
     data.to_excel(target_file, engine='openpyxl')
 
 
@@ -30,6 +31,7 @@ def run_slice_trading(slices=None, daily_investment=100,
                                                rolling_window=200)
         target_file = 'data/temp/' + individualSlice.name + '_slice.xlsx'
         os.makedirs(os.path.dirname(target_file), exist_ok=True)
+        print('writing file {0}'.format(target_file))
         data.to_excel(target_file, engine='openpyxl')
 
 

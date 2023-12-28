@@ -2,7 +2,6 @@ from stock_analysis import RawDataLoader, dollar_averaging, run_slice_trading
 from stock_analysis.config.config import Config
 
 if __name__ == "__main__":
-    # Your code here
     tickers = Config.get_tickers()
     data_loader = RawDataLoader()
     data_loader.load_tickers(tickers)

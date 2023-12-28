@@ -13,7 +13,7 @@ This project is designed to be easy to set up and use.
 - Clone the repository using Git
 
 ```bash
-    git clone https://github.com/go-fireball/stock-analysis.git
+git clone https://github.com/go-fireball/stock-analysis.git
 ```
 
 ### Installing Dependencies
