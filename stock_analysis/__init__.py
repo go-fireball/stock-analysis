@@ -43,7 +43,7 @@ def run_slice_trading(slices=None, daily_investment=100,
             last_profit_percent_data.append({'Ticker': ticker,
                                              'Last Profit %': last_profit_percent})
 
-        last_profit_percent = data[('Total', '% age')].iloc[-1]
+        last_profit_percent = data[('Total', 'Profit_%')].iloc[-1]
         last_profit_percent_data.append({'Ticker': 'Total',
                                          'Last Profit %': last_profit_percent})
         target_file = 'data/temp/' + individualSlice.name + '_slice_summary.xlsx'

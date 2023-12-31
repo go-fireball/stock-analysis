@@ -84,7 +84,7 @@ class SliceTrader:
         combined_data['Total', 'Cost'] = round(total_cost.cumsum(), 0)
         combined_data['Total', 'Value'] = round(total_value, 2)
         combined_data['Total', 'Profit'] = round(combined_data['Total', 'Value'] - combined_data['Total', 'Cost'], 2)
-        combined_data['Total', '% age'] = round(
+        combined_data['Total', 'Profit_%'] = round(
             combined_data['Total', 'Profit'] / combined_data['Total', 'Cost'] * 100, 2)
 
         combined_data.columns = pd.MultiIndex.from_tuples(combined_data.columns)  # Create a MultiIndex
