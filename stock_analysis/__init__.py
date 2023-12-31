@@ -20,21 +20,22 @@ def dollar_averaging(daily_investment=100, start_date='1/1/2000'):
     data.to_excel(target_file, engine='openpyxl')
 
 
-def run_slice_trading(slices=None, daily_investment=100,
-                      start_date='1/1/2000'):
+def run_slice_trading(slices=None, daily_investment=100, start_date='1/1/2000'):
     print('running slice trading')
     if slices is None:
         slices = Config.get_slices()
     slice_trader = SliceTrader()
     for individualSlice in slices:
-        data = slice_trader.calculate_strategy(tickers=individualSlice.tickers,
-                                               daily_investment=daily_investment,
-                                               start_date=start_date,
-                                               rolling_window=200)
+        data, data_pf = slice_trader.calculate_strategy(tickers=individualSlice.tickers,
+                                                        daily_investment=daily_investment,
+                                                        start_date=start_date,
+                                                        rolling_window=200)
         target_file = 'data/temp/' + individualSlice.name + '_slice.xlsx'
+        target_pf_file = 'data/temp/' + individualSlice.name + '_slice_pf.xlsx'
         os.makedirs(os.path.dirname(target_file), exist_ok=True)
         print('writing file {0}'.format(target_file))
         data.to_excel(target_file, engine='openpyxl')
+        data_pf.to_excel(target_pf_file, engine='openpyxl')
 
         last_profit_percent_data = []
 
