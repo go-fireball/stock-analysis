@@ -1,5 +1,7 @@
 import os
 
+import pandas as pd
+
 from stock_analysis.config.config import Config
 from stock_analysis.dtos.slice import Slice
 from stock_analysis.process.data_loader import RawDataLoader
@@ -34,4 +36,16 @@ def run_slice_trading(slices=None, daily_investment=100,
         print('writing file {0}'.format(target_file))
         data.to_excel(target_file, engine='openpyxl')
 
+        last_profit_percent_data = []
 
+        for ticker in individualSlice.tickers:
+            last_profit_percent = data[(ticker, 'Profit_%')].iloc[-1]
+            last_profit_percent_data.append({'Ticker': ticker,
+                                             'Last Profit %': last_profit_percent})
+
+        last_profit_percent = data[('Total', '% age')].iloc[-1]
+        last_profit_percent_data.append({'Ticker': 'Total',
+                                         'Last Profit %': last_profit_percent})
+        target_file = 'data/temp/' + individualSlice.name + '_slice_summary.xlsx'
+        last_profit_percent_df = pd.DataFrame(last_profit_percent_data).set_index('Ticker')
+        last_profit_percent_df.to_excel(target_file, engine='openpyxl')
