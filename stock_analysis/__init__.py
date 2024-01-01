@@ -29,7 +29,7 @@ def run_slice_trading(slices=None, daily_investment=100, start_date='1/1/2000'):
         data, data_pf = slice_trader.calculate_strategy(tickers=individualSlice.tickers,
                                                         daily_investment=daily_investment,
                                                         start_date=start_date,
-                                                        rolling_window=200)
+                                                        rolling_window=500)
         target_file = 'data/temp/' + individualSlice.name + '_slice.xlsx'
         target_pf_file = 'data/temp/' + individualSlice.name + '_slice_pf.xlsx'
         os.makedirs(os.path.dirname(target_file), exist_ok=True)

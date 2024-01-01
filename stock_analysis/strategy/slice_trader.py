@@ -1,3 +1,5 @@
+from typing import Any
+
 import pandas as pd
 
 from stock_analysis.data_access.data_access import DataAccess
@@ -15,7 +17,7 @@ class SliceTrader:
         analysis_data = self.__calculate_risk(portfolio_data, rolling_window)
         analysis_data['Slice', 'Price'] = self.__calculate_slice_price(adj_close_data, tickers)
         analysis_data['Slice', 'Index'] = self.__calculate_index(adj_close_data)
-        annual_profit_df = self.calculate_annualized_profit(portfolio_data)
+        annual_profit_df = self.calculate_annualized_profit_improved(portfolio_data)
         return analysis_data, annual_profit_df
 
     @staticmethod
@@ -34,7 +36,7 @@ class SliceTrader:
     @staticmethod
     def __calculate_risk(portfolio_data, rolling_window) -> pd.DataFrame:
         total_return = (portfolio_data['Total', 'Value'] / portfolio_data['Total', 'Cost']) - 1
-        risk_free_rate = 0.04
+        risk_free_rate: float = 0.05
         rolling_std_dev = total_return.rolling(window=rolling_window).std()
         rolling_mean_return = total_return.rolling(window=rolling_window).mean()
         rolling_sharpe_ratio = (rolling_mean_return - risk_free_rate) / rolling_std_dev
@@ -88,16 +90,19 @@ class SliceTrader:
         return combined_data
 
     @staticmethod
-    def calculate_annualized_profit(combined_data: pd.DataFrame) -> pd.DataFrame:
-        # Extract the 'TotalReturn' series
+    def calculate_annualized_profit_improved(combined_data: pd.DataFrame) -> pd.DataFrame:
+        def annualized_return(x):
+            if len(x) < 2:
+                return None
+            start_date = x.index[0]
+            end_date = x.index[-1]
+            years = (end_date - start_date).days / 365.25
+            if years <= 0:
+                return None
+            return ((x.iloc[-1] + 1) ** (1 / years) - 1) * 100
+
         total_return = combined_data['Slice', 'TotalReturn']
-
-        # Group by year. For each group, calculate the annual return
-        annual_profit = total_return.groupby(pd.Grouper(freq='Y')).apply(
-            lambda x: x.iloc[-1] if x.index.year[0] == x.index.year[-1] else (x.iloc[-1] + 1) / (x.iloc[0] + 1) - 1
-        )
-
+        annual_profit = total_return.groupby(pd.Grouper(freq='Y')).apply(annualized_return)
         annual_profit_df = annual_profit.to_frame('Annualized Profit %')
-        annual_profit_df.index = annual_profit_df.index.year  # Set the index to the year
-
+        annual_profit_df.index = annual_profit_df.index.year
         return annual_profit_df
