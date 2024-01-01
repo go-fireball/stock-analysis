@@ -2,7 +2,7 @@ import pandas as pd
 from stock_analysis.data_access.data_access import DataAccess
 
 
-class DailyTrader:
+class DollarAveraging:
     def __init__(self):
         self.__data_access = DataAccess()
 

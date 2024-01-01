@@ -5,13 +5,13 @@ import pandas as pd
 from stock_analysis.config.config import Config
 from stock_analysis.dtos.slice import Slice
 from stock_analysis.process.data_loader import RawDataLoader
-from stock_analysis.strategy.daily_trader import DailyTrader
+from stock_analysis.strategy.dollar_averaging import DollarAveraging
 from stock_analysis.strategy.slice_trader import SliceTrader
 
 
 def dollar_averaging(daily_investment=100, start_date='1/1/2000'):
     print('running dollar averaging trading for each ticker')
-    daily_trader = DailyTrader()
+    daily_trader = DollarAveraging()
     data = daily_trader.calculate_strategy(tickers=Config.get_tickers(), daily_investment=daily_investment,
                                            start_date=start_date)
     target_file = 'data/temp/dollar_averaging.xlsx'
