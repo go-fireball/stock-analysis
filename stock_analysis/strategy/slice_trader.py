@@ -1,5 +1,3 @@
-from typing import Any
-
 import pandas as pd
 
 from stock_analysis.data_access.data_access import DataAccess
@@ -10,7 +8,7 @@ class SliceTrader:
     def __init__(self):
         self.__data_access = DataAccess()
 
-    def calculate_strategy(self, tickers, daily_investment: int,
+    def calculate_strategy(self, tickers: list[str], daily_investment: int,
                            start_date: str = '01/01/2010',
                            rolling_window=30) -> (pd.DataFrame, pd.DataFrame):
         adj_close_data = self.__data_access.load_price(tickers, start_date=start_date)
@@ -22,7 +20,7 @@ class SliceTrader:
         return analysis_data, annual_profit_df
 
     @staticmethod
-    def __calculate_slice_price(adj_close_data: pd.DataFrame, tickers) -> pd.DataFrame:
+    def __calculate_slice_price(adj_close_data: pd.DataFrame, tickers: list[str]) -> pd.DataFrame:
         weight_per_ticker = 1 / len(tickers)
         weighted_prices = adj_close_data.apply(lambda x: x * weight_per_ticker)
         slice_price = weighted_prices.sum(axis=1)
