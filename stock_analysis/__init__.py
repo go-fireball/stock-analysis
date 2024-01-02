@@ -10,12 +10,11 @@ from stock_analysis.strategy.slice_trader import SliceTrader
 import yfinance as yf
 
 
-def ticker_info():
+def ticker_info(tickers: list[str]):
     columns = ['Market Cap (in Billions)', 'PE Ratio']
     df = pd.DataFrame(columns=columns)
     df.index.name = 'Ticker'
 
-    tickers = Config.get_tickers()
     for ticker in tickers:
         stock = yf.Ticker(ticker)
         market_cap = None

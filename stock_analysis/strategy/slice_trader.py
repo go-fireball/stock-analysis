@@ -34,22 +34,45 @@ class SliceTrader:
         return equal_weighted_index
 
     @staticmethod
-    def __calculate_risk(portfolio_data, rolling_window) -> pd.DataFrame:
-        total_return = (portfolio_data['Total', 'Value'] / portfolio_data['Total', 'Cost']) - 1
-        risk_free_rate: float = 0.05
+    def __calculate_total_return(cost_series: pd.Series, value_series: pd.Series) -> pd.Series:
+        total_return = (value_series / cost_series) - 1
+        return round(total_return, 4)
+
+    @staticmethod
+    def __calculate_sharp_ratio(total_return: pd.Series, annual_risk_free_rate: float,
+                                rolling_window: int) -> pd.Series:
+        daily_risk_free_rate = (1 + annual_risk_free_rate) ** (1 / 252) - 1  # Assuming 252 trading days in a year
         rolling_std_dev = total_return.rolling(window=rolling_window).std()
         rolling_mean_return = total_return.rolling(window=rolling_window).mean()
-        rolling_sharpe_ratio = (rolling_mean_return - risk_free_rate) / rolling_std_dev
+        rolling_sharpe_ratio = (rolling_mean_return - daily_risk_free_rate) / rolling_std_dev
         rolling_sharpe_ratio[rolling_std_dev == 0] = None
-        excess_returns = total_return - risk_free_rate
+        return round(rolling_sharpe_ratio, 2)
 
+    @staticmethod
+    def __calculate_sortino_ratio(total_return: pd.Series, annual_risk_free_rate: float,
+                                  rolling_window: int) -> pd.Series:
+        daily_risk_free_rate = (1 + annual_risk_free_rate) ** (1 / 252) - 1
+        excess_returns = total_return - daily_risk_free_rate
         negative_excess_returns = excess_returns.loc[excess_returns < 0]
         rolling_negative_std_dev = negative_excess_returns.rolling(window=rolling_window).std()
         rolling_mean_excess_return = excess_returns.rolling(window=rolling_window).mean()
         rolling_sortino_ratio = rolling_mean_excess_return / rolling_negative_std_dev
         mask = (rolling_negative_std_dev == 0).reindex(rolling_sortino_ratio.index, fill_value=False)
         rolling_sortino_ratio[mask] = None
-        portfolio_data['Slice', 'TotalReturn'] = round(total_return, 4)
+        return round(rolling_sortino_ratio, 2)
+
+    @staticmethod
+    def __calculate_risk(portfolio_data: pd.DataFrame, rolling_window: int) -> pd.DataFrame:
+        total_return = SliceTrader.__calculate_total_return(portfolio_data['Total', 'Cost'],
+                                                            portfolio_data['Total', 'Value'])
+        annual_risk_free_rate: float = 0.05
+        rolling_sharpe_ratio = SliceTrader.__calculate_sharp_ratio(total_return=total_return,
+                                                                   annual_risk_free_rate=annual_risk_free_rate,
+                                                                   rolling_window=rolling_window)
+        rolling_sortino_ratio = SliceTrader.__calculate_sortino_ratio(total_return=total_return,
+                                                                      annual_risk_free_rate=annual_risk_free_rate,
+                                                                      rolling_window=rolling_window)
+        portfolio_data['Slice', 'TotalReturn'] = total_return
         portfolio_data['Slice', 'SharpRatio.{0}'.format(rolling_window)] = rolling_sharpe_ratio
         portfolio_data['Slice', 'SortinoRatio.{0}'.format(rolling_window)] = rolling_sortino_ratio
 
