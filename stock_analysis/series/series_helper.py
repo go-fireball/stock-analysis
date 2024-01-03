@@ -2,7 +2,6 @@ import pandas as pd
 
 
 class SeriesHelper:
-
     @staticmethod
     def calculate_total_return(cost_series: pd.Series, value_series: pd.Series) -> pd.Series:
         total_return = (value_series / cost_series) - 1
