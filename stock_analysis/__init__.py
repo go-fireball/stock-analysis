@@ -1,13 +1,57 @@
 import os
 
 import pandas as pd
-
+import pytz
 from stock_analysis.config.config import Config
 from stock_analysis.dtos.slice import Slice
 from stock_analysis.process.data_loader import RawDataLoader
 from stock_analysis.strategy.dollar_averaging import DollarAveraging
 from stock_analysis.strategy.slice_trader import SliceTrader
 import yfinance as yf
+
+
+def indexes():
+    indices = {
+        '^GSPC': 'S&P 500 (US)',
+        '^DJI': 'Dow Jones Industrial Average (US)',
+        '^IXIC': 'NASDAQ Composite (US)',
+        '^FTSE': 'FTSE 100 (UK)',
+        '^GDAXI': 'DAX (Germany)',
+        '^FCHI': 'CAC 40 (France)',
+        '^N225': 'Nikkei 225 (Japan)',
+        '000001.SS': 'SSE Composite Index (China)',
+        '^NSEI': 'NIFTY 50 (India)',
+        '^BSESN': 'BSE SENSEX(India)'
+    }
+    columns = ['Last Close', 'Previous Close', 'Change', 'Direction', 'Last Close Time']
+    df = pd.DataFrame(columns=columns)
+    df.index.name = 'Index'
+    for ticker, name in indices.items():
+        print(ticker)
+        ticker = yf.Ticker(ticker)
+        hist = ticker.history(period="2d")  # Get the last 2 days
+
+        last_close = hist['Close'].iloc[-1]
+        # Check if previous close data exists
+        if len(hist) > 1:
+            previous_close = hist['Close'].iloc[-2]
+            change = last_close - previous_close
+            direction = "Up" if change > 0 else "Down" if change < 0 else "No Change"
+        else:
+            previous_close = None
+            change = None
+            direction = "Data Unavailable"
+
+        local_time_zone = pytz.timezone('America/New_York')
+        last_close_time = hist.index[-1].astimezone(local_time_zone)
+        last_close_time_naive = last_close_time.replace(tzinfo=None)
+
+        # Add data to DataFrame
+        if previous_close is not None:
+            df.loc[name] = [last_close, previous_close, change, direction, last_close_time_naive]
+    target_file = 'data/temp/world_market_today.xlsx'
+    df.to_excel(target_file, engine='openpyxl')
+    print(df)
 
 
 def ticker_info(tickers: list[str]):

@@ -1,10 +1,11 @@
-from stock_analysis import RawDataLoader, dollar_averaging, run_slice_trading, ticker_info
+from stock_analysis import RawDataLoader, dollar_averaging, run_slice_trading, ticker_info, indexes
 from stock_analysis.config.config import Config
 
 if __name__ == "__main__":
     daily_investment = 100
-    start_date = '1/1/2015'
+    start_date = '1/1/2024'
     rolling_window = 200
+    indexes()
     price_load = False
     tickers = Config.get_tickers()
     if price_load:
