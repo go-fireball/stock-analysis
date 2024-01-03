@@ -3,7 +3,7 @@ from stock_analysis.config.config import Config
 
 if __name__ == "__main__":
     daily_investment = 100
-    start_date = '1/1/2024'
+    start_date = '1/1/2010'
     rolling_window = 200
     indexes()
     price_load = False

@@ -8,6 +8,14 @@ class SeriesHelper:
         return round(total_return, 4)
 
     @staticmethod
+    def calculate_profit(cost_series: pd.Series, value_series: pd.Series) -> pd.Series:
+        return round(value_series - cost_series, 4)
+
+    @staticmethod
+    def calculate_profit_percent(cost_series: pd.Series, value_series: pd.Series) -> pd.Series:
+        return round((value_series - cost_series) / cost_series * 100, 4)
+
+    @staticmethod
     def calculate_sharp_ratio(total_return: pd.Series, annual_risk_free_rate: float,
                               rolling_window: int) -> pd.Series:
         daily_risk_free_rate = (1 + annual_risk_free_rate) ** (1 / 252) - 1  # Assuming 252 trading days in a year

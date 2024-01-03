@@ -33,22 +33,25 @@ def indexes():
 
         last_close = hist['Close'].iloc[-1]
         # Check if previous close data exists
+        print(len(hist))
         if len(hist) > 1:
             previous_close = hist['Close'].iloc[-2]
             change = last_close - previous_close
+            change_percent = round(change / previous_close * 100, 2)
             direction = "Up" if change > 0 else "Down" if change < 0 else "No Change"
         else:
             previous_close = None
             change = None
+            change_percent = None
             direction = "Data Unavailable"
 
         local_time_zone = pytz.timezone('America/New_York')
-        last_close_time = hist.index[-1].astimezone(local_time_zone)
+        last_close_time = hist.index[-1]
         last_close_time_naive = last_close_time.replace(tzinfo=None)
 
         # Add data to DataFrame
-        if previous_close is not None:
-            df.loc[name] = [last_close, previous_close, change, direction, last_close_time_naive]
+        if previous_close is not None and change is not None:
+            df.loc[name] = [last_close, previous_close, change_percent, direction, last_close_time_naive]
     target_file = 'data/temp/world_market_today.xlsx'
     df.to_excel(target_file, engine='openpyxl')
     print(df)
