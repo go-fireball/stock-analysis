@@ -8,35 +8,8 @@
       "MSFT",
       "KLAC",
       "NVDA"
-    ]
-  },
-  {
-    "name": "tech4",
-    "tickers": [
-      "AAPL",
-      "AMZN",
-      "GOOG",
-      "MSFT"
-    ]
-  },
-  {
-    "name": "brk",
-    "tickers": [
-      "BRK-B"
-    ]
-  },
-  {
-    "name": "industrial",
-    "tickers": [
-      "CAT",
-      "DE"
-    ]
-  },
-  {
-    "name": "food",
-    "tickers": [
-      "DPZ"
-    ]
+    ],
+    "start_date": "12/29/2023"
   },
   {
     "name": "diversified",
@@ -50,6 +23,7 @@
       "AVGO",
       "AMAT",
       "AMD"
-    ]
+    ],
+    "start_date": "12/29/2023"
   }
 ]

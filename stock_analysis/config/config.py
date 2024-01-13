@@ -35,5 +35,5 @@ class Config:
     def get_slices() -> list[Slice]:
         with open(Config.slices_config_path, 'r') as file:
             data = json.load(file)
-        slices = [Slice(item["name"], item["tickers"]) for item in data]
+        slices = [Slice(item["name"], item["tickers"], item["start_date"]) for item in data]
         return slices
