@@ -6,7 +6,7 @@ if __name__ == "__main__":
     start_date = '12/29/2023'
     rolling_window = 200
     indexes()
-    price_load = False
+    price_load = True
     tickers = Config.get_tickers()
     if price_load:
         data_loader = RawDataLoader()

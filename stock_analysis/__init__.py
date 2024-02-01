@@ -9,6 +9,7 @@ from stock_analysis.dtos.slice import Slice
 from stock_analysis.process.data_loader import RawDataLoader
 from stock_analysis.strategy.dollar_averaging import DollarAveraging
 from stock_analysis.strategy.slice_trader import SliceTrader
+from datetime import date
 import yfinance as yf
 
 
@@ -55,6 +56,10 @@ def indexes():
         if previous_close is not None and change is not None:
             df.loc[name] = [last_close, previous_close, change_percent, direction, last_close_time_naive]
     target_file = 'data/temp/world_market_today.xlsx'
+    df.to_excel(target_file, engine='openpyxl')
+
+    formatted_date = date.today().strftime('%Y-%m-%d')
+    target_file = 'data/temp/world_market_{0}.xlsx'.format(formatted_date)
     df.to_excel(target_file, engine='openpyxl')
     print(df)
 
