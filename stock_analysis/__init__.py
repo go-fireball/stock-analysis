@@ -94,7 +94,8 @@ def dollar_averaging(daily_investment=100, start_date='1/1/2000'):
     data.to_excel(target_file, engine='openpyxl')
 
 
-def run_slice_trading(slices=None, daily_investment=100,
+def run_slice_trading(daily_investment_pairs: list[tuple[datetime, int]],
+                      slices=None,
                       rolling_window=200):
     print('running slice trading')
     if slices is None:
@@ -102,7 +103,7 @@ def run_slice_trading(slices=None, daily_investment=100,
     slice_trader = SliceTrader()
     for individualSlice in slices:
         data, data_pf = slice_trader.calculate_strategy(tickers=individualSlice.tickers,
-                                                        daily_investment=daily_investment,
+                                                        daily_investment_pairs=daily_investment_pairs,
                                                         start_date=individualSlice.start_date,
                                                         rolling_window=rolling_window)
         formatted_date = datetime.strptime(individualSlice.start_date, '%m/%d/%Y').strftime('%Y-%m-%d')
