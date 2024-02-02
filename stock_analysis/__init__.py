@@ -83,10 +83,10 @@ def ticker_info(tickers: list[str]):
     df.to_excel(target_file, engine='openpyxl')
 
 
-def dollar_averaging(daily_investment=100, start_date='1/1/2000'):
+def dollar_averaging(daily_investment_pairs: list[tuple[datetime, int]], start_date='1/1/2000'):
     print('running dollar averaging trading for each ticker')
     daily_trader = DollarAveraging()
-    data = daily_trader.calculate_strategy(tickers=Config.get_tickers(), daily_investment=daily_investment,
+    data = daily_trader.calculate_strategy(tickers=Config.get_tickers(), daily_investment_pairs=daily_investment_pairs,
                                            start_date=start_date)
     target_file = 'data/temp/dollar_averaging.xlsx'
     os.makedirs(os.path.dirname(target_file), exist_ok=True)

@@ -1,6 +1,7 @@
 import pandas as pd
 
 from stock_analysis.data_access.data_access import DataAccess
+from stock_analysis.helpers import get_daily_investment
 from stock_analysis.series.series_helper import SeriesHelper
 from datetime import datetime
 
@@ -51,18 +52,8 @@ class SliceTrader:
         return portfolio_data
 
     @staticmethod
-    def __calculate_investment(adj_close_data, tickers, daily_investment_pairs: list[tuple[datetime, int]]) -> pd.DataFrame:
-        def get_daily_investment(date):
-            # Sort and find the appropriate investment amount
-            daily_investment_pairs.sort()
-            investment_amount = None
-            for invest_date, amount in daily_investment_pairs:
-                if invest_date <= date:
-                    investment_amount = amount
-                else:
-                    break
-            return investment_amount
-
+    def __calculate_investment(adj_close_data, tickers,
+                               daily_investment_pairs: list[tuple[datetime, int]]) -> pd.DataFrame:
         combined_data = pd.DataFrame(index=adj_close_data.index)
         total_cost = pd.Series(index=adj_close_data.index, dtype=float).fillna(0)
         total_value = pd.Series(index=adj_close_data.index, dtype=float).fillna(0)
@@ -70,7 +61,7 @@ class SliceTrader:
         for ticker in tickers:
             # Calculate daily_investment_today from daily_investment
             # use the combine_data "Date" column for the date string
-            daily_investment_today = combined_data.index.map(lambda x: get_daily_investment(x))
+            daily_investment_today = combined_data.index.map(lambda x: get_daily_investment(daily_investment_pairs, x))
             daily_investment_per_ticker = daily_investment_today / len(tickers)  # Investment per ticker
             units = daily_investment_per_ticker / adj_close_data[ticker]  # Number of units bought daily
 
