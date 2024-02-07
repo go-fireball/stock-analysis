@@ -1,8 +1,7 @@
-from typing import List, Tuple
+from datetime import datetime
 
 from stock_analysis import RawDataLoader, dollar_averaging, run_slice_trading, ticker_info, indexes
 from stock_analysis.config.config import Config
-from datetime import datetime
 
 daily_investment_pairs: list[tuple[datetime, int]] = [
     (datetime(2023, 12, 29), 225),
@@ -11,7 +10,6 @@ daily_investment_pairs: list[tuple[datetime, int]] = [
 start_date = '12/29/2023'
 
 if __name__ == "__main__":
-    daily_investment = 225
     start_date = '12/29/2023'
     rolling_window = 200
     indexes()
@@ -19,7 +17,7 @@ if __name__ == "__main__":
     tickers = Config.get_tickers()
     if price_load:
         data_loader = RawDataLoader()
-        data_loader.load_tickers(tickers)
+        # data_loader.load_tickers(tickers)
         ticker_info(tickers)
     dollar_averaging(daily_investment_pairs=daily_investment_pairs, start_date=start_date)
     run_slice_trading(daily_investment_pairs=daily_investment_pairs,

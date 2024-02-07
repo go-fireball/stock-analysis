@@ -65,7 +65,11 @@ def indexes():
 
 
 def ticker_info(tickers: list[str]):
-    columns = ['Market Cap (in Billions)', 'PE Ratio']
+    columns = ['Market Cap (in Billions)', 'PE Ratio', 'ROE',
+               'DebtToEquity', 'CurrentRatio', 'OperatingMargins',
+               'FreeCashflow', 'RevenuePerShare', 'TrailingPegRatio',
+               'EarningsGrowth', 'RevenueGrowth', 'EbitdaMargins',
+               'RecommendationKey', 'NumberOfAnalystOpinions']
     df = pd.DataFrame(columns=columns)
     df.index.name = 'Ticker'
 
@@ -73,12 +77,64 @@ def ticker_info(tickers: list[str]):
         stock = yf.Ticker(ticker)
         market_cap = None
         pe_ratio = None
+        return_on_equity = None
+        current_ratio = None
+        debt_to_equity = None
+        operating_margins = None
+        free_cashflow = None
+        revenue_per_share = None
+        trailing_peg_ratio = None
+        earnings_growth = None
+        revenue_growth = None
+        ebitda_margins = None
+        recommendation_key = None
+        number_of_analyst_opinions = None
         if stock.info.__contains__('marketCap'):
             market_cap = round(stock.info['marketCap'] / 1000000000, 3)
         if stock.info.__contains__('trailingPE'):
             pe_ratio = stock.info['trailingPE']
 
-        df.loc[ticker] = [market_cap, pe_ratio]
+        if stock.info.__contains__('returnOnEquity'):
+            return_on_equity = stock.info['returnOnEquity']
+
+        if stock.info.__contains__('debtToEquity'):
+            debt_to_equity = stock.info['debtToEquity']
+
+        if stock.info.__contains__('currentRatio'):
+            current_ratio = stock.info['currentRatio']
+
+        if stock.info.__contains__('operatingMargins'):
+            operating_margins = stock.info['operatingMargins']
+
+        if stock.info.__contains__('freeCashflow'):
+            free_cashflow = stock.info['freeCashflow']
+
+        if stock.info.__contains__('revenuePerShare'):
+            revenue_per_share = stock.info['revenuePerShare']
+
+        if stock.info.__contains__('trailingPegRatio'):
+            trailing_peg_ratio = stock.info['trailingPegRatio']
+
+        if stock.info.__contains__('earningsGrowth'):
+            earnings_growth = stock.info['earningsGrowth']
+
+        if stock.info.__contains__('revenueGrowth'):
+            revenue_growth = stock.info['revenueGrowth']
+
+        if stock.info.__contains__('ebitdaMargins'):
+            ebitda_margins = stock.info['ebitdaMargins']
+
+        if stock.info.__contains__('recommendationKey'):
+            recommendation_key = stock.info['recommendationKey']
+
+        if stock.info.__contains__('numberOfAnalystOpinions'):
+            number_of_analyst_opinions = stock.info['numberOfAnalystOpinions']
+
+        df.loc[ticker] = [market_cap, pe_ratio, return_on_equity,
+                          debt_to_equity, current_ratio, operating_margins,
+                          free_cashflow, revenue_per_share, trailing_peg_ratio,
+                          earnings_growth, revenue_growth, ebitda_margins,
+                          recommendation_key, number_of_analyst_opinions]
     target_file = 'data/temp/ticker_info.xlsx'
     df.to_excel(target_file, engine='openpyxl')
 
