@@ -17,7 +17,7 @@ if __name__ == "__main__":
     tickers = Config.get_tickers()
     if price_load:
         data_loader = RawDataLoader()
-        # data_loader.load_tickers(tickers)
+        data_loader.load_tickers(tickers)
         ticker_info(tickers)
     dollar_averaging(daily_investment_pairs=daily_investment_pairs, start_date=start_date)
     run_slice_trading(daily_investment_pairs=daily_investment_pairs,
