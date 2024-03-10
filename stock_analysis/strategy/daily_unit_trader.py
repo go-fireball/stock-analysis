@@ -7,14 +7,14 @@ class DailyUnitTrader:
     def __init__(self):
         self.__data_access = DataAccess()
 
-    def calculate_strategy(self, tickers, daily_units: int, start_date: str = '01/01/2010'):
+    def calculate_strategy(self, tickers, start_date: str = '01/01/2010'):
         price_data = self.__data_access.load_price(tickers, start_date=start_date)
-        combined_data = self.__calculate_investment(price_data, tickers, daily_units)
+        combined_data = self.__calculate_investment(price_data, tickers)
         comparison_data = self.__save_profit_percent_to_excel(combined_data)
         return comparison_data
 
     @staticmethod
-    def __calculate_investment(price_data, tickers, daily_units: int) -> pd.DataFrame:
+    def __calculate_investment(price_data, tickers) -> pd.DataFrame:
         data_frames = []
 
         for ticker in tickers:

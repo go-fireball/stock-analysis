@@ -7,6 +7,7 @@ import pytz
 from stock_analysis.config.config import Config
 from stock_analysis.dtos.slice import Slice
 from stock_analysis.process.data_loader import RawDataLoader
+from stock_analysis.strategy.daily_unit_trader import DailyUnitTrader
 from stock_analysis.strategy.dollar_averaging import DollarAveraging
 from stock_analysis.strategy.slice_trader import SliceTrader
 from datetime import date
@@ -65,7 +66,6 @@ def indexes():
 
 
 def ticker_info(tickers: list[str]):
-
     key_to_column = {
         'marketCap': 'Market Cap (in Billions)',
         'trailingPE': 'PE Ratio',
@@ -82,7 +82,8 @@ def ticker_info(tickers: list[str]):
         'recommendationKey': 'RecommendationKey',
         'numberOfAnalystOpinions': 'NumberOfAnalystOpinions',
         'priceToBook': 'PriceToBook',
-        'ebitda': 'Ebitda'
+        'ebitda': 'Ebitda',
+        'heldPercentInstitutions': 'HeldPercentInstitutions'
     }
     columns = list(key_to_column.values())
     df = pd.DataFrame(columns=columns)
@@ -96,7 +97,7 @@ def ticker_info(tickers: list[str]):
             if key in info:
                 value = info[key]
             # Special handling for marketCap (convert to billions and round)
-            if key == 'marketCap':
+            if key == 'marketCap' and value is not None:
                 value = round(value / 1000000000, 3)
             data[column] = value
 
@@ -114,12 +115,24 @@ def ticker_info(tickers: list[str]):
 def dollar_averaging(daily_investment_pairs: list[tuple[datetime, int]], start_date='1/1/2000'):
     print('running dollar averaging trading for each ticker')
     daily_trader = DollarAveraging()
-    data = daily_trader.calculate_strategy(tickers=Config.get_tickers(), daily_investment_pairs=daily_investment_pairs,
+    tickers = Config.get_tickers()
+    data = daily_trader.calculate_strategy(tickers=tickers, daily_investment_pairs=daily_investment_pairs,
                                            start_date=start_date)
-    target_file = 'data/temp/dollar_averaging.xlsx'
+    formatted_date = datetime.strptime(start_date, '%m/%d/%Y').strftime('%Y-%m-%d')
+    target_file = 'data/temp/dollar_averaging_{0}.xlsx'.format(formatted_date)
+    target_summary_file = 'data/temp/dollar_averaging_summary_{0}.xlsx'.format(formatted_date)
     os.makedirs(os.path.dirname(target_file), exist_ok=True)
     print('writing file {0}'.format(target_file))
     data.to_excel(target_file, engine='openpyxl')
+
+    last_profit_percent_data = []
+
+    for ticker in tickers:
+        ticker_profit_percent = data[(ticker, 'Profit_%')].iloc[-1]
+        last_profit_percent_data.append({'Ticker': ticker,
+                                         'Last Profit %': ticker_profit_percent})
+    last_profit_percent_df = pd.DataFrame(last_profit_percent_data).set_index('Ticker')
+    last_profit_percent_df.to_excel(target_summary_file, engine='openpyxl')
 
 
 def run_slice_trading(daily_investment_pairs: list[tuple[datetime, int]],
@@ -160,3 +173,12 @@ def run_slice_trading(daily_investment_pairs: list[tuple[datetime, int]],
 
         last_profit_percent_df = pd.DataFrame(last_profit_percent_data).set_index('Ticker')
         last_profit_percent_df.to_excel(target_summary_file, engine='openpyxl')
+
+
+def run_unit_trading(tickers, start_date='1/1/2000'):
+    print('running unit trading')
+    daily_unit_trader = DailyUnitTrader()
+    data = daily_unit_trader.calculate_strategy(tickers=tickers, start_date=start_date)
+    formatted_date = datetime.strptime(start_date, '%m/%d/%Y').strftime('%Y-%m-%d')
+    target_file = 'data/temp/daily_unit_trading_{0}.xlsx'.format(formatted_date)
+    data.to_excel(target_file, engine='openpyxl')

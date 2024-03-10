@@ -25,5 +25,27 @@
       "AMD"
     ],
     "start_date": "12/29/2023"
+  },
+  {
+    "name": "diversified_test",
+    "tickers": [
+      "AAPL",
+      "AMZN",
+      "KLAC",
+      "MSFT",
+      "NVDA",
+      "GOOG",
+      "AVGO",
+      "AMAT",
+      "AMD"
+    ],
+    "start_date": "01/01/2010"
+  },
+  {
+    "name": "FNGG_test",
+    "tickers": [
+      "FNGG"
+    ],
+    "start_date": "12/29/2023"
   }
 ]
