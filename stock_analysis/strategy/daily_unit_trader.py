@@ -1,6 +1,8 @@
 from stock_analysis.data_access.data_access import DataAccess
 import pandas as pd
 
+from stock_analysis.strategy.constants import Constants
+
 
 # noinspection DuplicatedCode
 class DailyUnitTrader:
@@ -21,12 +23,12 @@ class DailyUnitTrader:
             units = pd.Series(index=price_data.index, dtype=float).fillna(1)
             daily_cost = round(units * price_data[ticker], 2)
             ticker_data = pd.DataFrame({
-                (ticker, 'Price'): round(price_data[ticker], 4),
-                (ticker, 'Units'): round(units.cumsum(), 4),
-                (ticker, 'Total Cost'): round(daily_cost.cumsum(), 4),
-                (ticker, 'Market Value'): round((units.cumsum()) * price_data[ticker], 4),
-                (ticker, 'Profit'): round((units.cumsum() * price_data[ticker]) - daily_cost.cumsum(), 4),
-                (ticker, 'Profit %'): round(
+                (ticker, Constants.Price): round(price_data[ticker], 4),
+                (ticker, Constants.Units): round(units.cumsum(), 4),
+                (ticker, Constants.TotalCost): round(daily_cost.cumsum(), 4),
+                (ticker, Constants.TotalValue): round((units.cumsum()) * price_data[ticker], 4),
+                (ticker, Constants.Profit): round((units.cumsum() * price_data[ticker]) - daily_cost.cumsum(), 4),
+                (ticker, Constants.ProfitPercent): round(
                     ((units.cumsum() * price_data[ticker]) - daily_cost.cumsum()) / daily_cost.cumsum() * 100, 4)
             })
             data_frames.append(ticker_data)
@@ -40,7 +42,8 @@ class DailyUnitTrader:
         # Concatenate 'Profit %' for each ticker
         for ticker in combined_data.columns.levels[0]:
             # Extracting Profit % data
-            profit_percent_data = (combined_data[(ticker, 'Market Value')] - combined_data[(ticker, 'Total Cost')]) / \
-                                  combined_data[(ticker, 'Total Cost')] * 100
+            profit_percent_data = (combined_data[(ticker, Constants.TotalValue)] - combined_data[
+                (ticker, Constants.TotalCost)]) / \
+                                  combined_data[(ticker, Constants.TotalCost)] * 100
             comparison_data[ticker] = profit_percent_data  # Adding to the comparison DataFrame
         return comparison_data

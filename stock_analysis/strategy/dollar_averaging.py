@@ -4,6 +4,8 @@ from stock_analysis.helpers import get_daily_investment
 from stock_analysis.series.series_helper import SeriesHelper
 from datetime import datetime
 
+from stock_analysis.strategy.constants import Constants
+
 
 class DollarAveraging:
     def __init__(self):
@@ -29,12 +31,12 @@ class DollarAveraging:
             total_value = units.cumsum() * adjusted_price
 
             ticker_data = pd.DataFrame({
-                (ticker, 'Price'): adjusted_price,
-                (ticker, 'Units'): round(units.cumsum(), 4),
-                (ticker, 'Total Cost'): round(total_cost, 4),
-                (ticker, 'Total Value'): round(total_value, 4),
-                (ticker, 'Profit'): SeriesHelper.calculate_profit(total_cost, total_value),
-                (ticker, 'Profit_%'): SeriesHelper.calculate_profit_percent(total_cost, total_value)
+                (ticker, Constants.Price): adjusted_price,
+                (ticker, Constants.Units): round(units.cumsum(), 4),
+                (ticker, Constants.TotalCost): round(total_cost, 4),
+                (ticker, Constants.TotalValue): round(total_value, 4),
+                (ticker, Constants.Profit): SeriesHelper.calculate_profit(total_cost, total_value),
+                (ticker, Constants.ProfitPercent): SeriesHelper.calculate_profit_percent(total_cost, total_value)
             })
             data_frames.append(ticker_data)
         combined_data = pd.concat(data_frames, axis=1)
