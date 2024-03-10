@@ -5,6 +5,8 @@ from stock_analysis.helpers import get_daily_investment
 from stock_analysis.series.series_helper import SeriesHelper
 from datetime import datetime
 
+from stock_analysis.strategy.constants import Constants
+
 
 class SliceTrader:
     def __init__(self):
@@ -72,18 +74,20 @@ class SliceTrader:
             combined_data[(ticker, 'Current Value')] = round(combined_data[(ticker, 'Units')] * adj_close_data[ticker],
                                                              4)
 
-            combined_data[(ticker, 'Profit')] = round(combined_data[(ticker, 'Current Value')] -
-                                                      combined_data[(ticker, 'Total Cost')], 2)
-            combined_data[(ticker, 'Profit_%')] = round(
-                combined_data[(ticker, 'Profit')] / combined_data[(ticker, 'Total Cost')] * 100, 2)
+            combined_data[(ticker, 'Profit')] = SeriesHelper.calculate_profit(combined_data[(ticker, 'Total Cost')],
+                                                                              combined_data[(ticker, 'Current Value')])
+            combined_data[(ticker, 'Profit_%')] = SeriesHelper.calculate_profit_percent(
+                combined_data[(ticker, Constants.TotalCost)],
+                combined_data[(ticker, 'Current Value')])
+
             total_cost += daily_investment_per_ticker
             total_value += combined_data[(ticker, 'Current Value')]
 
         combined_data['Total', 'Cost'] = round(total_cost.cumsum(), 0)
         combined_data['Total', 'Value'] = round(total_value, 2)
         combined_data['Total', 'Profit'] = round(combined_data['Total', 'Value'] - combined_data['Total', 'Cost'], 2)
-        combined_data['Total', 'Profit_%'] = round(
-            combined_data['Total', 'Profit'] / combined_data['Total', 'Cost'] * 100, 2)
+        combined_data['Total', Constants.ProfitPercent] = round(
+            combined_data['Total', Constants.Profit] / combined_data['Total', 'Cost'] * 100, 2)
 
         combined_data.columns = pd.MultiIndex.from_tuples(combined_data.columns)  # Create a MultiIndex
         return combined_data
