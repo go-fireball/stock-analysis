@@ -118,15 +118,17 @@ def dollar_averaging(daily_investment_pairs: list[tuple[datetime, int]], start_d
     tickers = Config.get_tickers()
     data = daily_trader.calculate_strategy(tickers=tickers, daily_investment_pairs=daily_investment_pairs,
                                            start_date=start_date)
+    calculate_summary(data, start_date, tickers, 'dollar_averaging')
+
+
+def calculate_summary(data, start_date, tickers, file_prefix: str):
     formatted_date = datetime.strptime(start_date, '%m/%d/%Y').strftime('%Y-%m-%d')
-    target_file = 'data/temp/dollar_averaging_{0}.xlsx'.format(formatted_date)
-    target_summary_file = 'data/temp/dollar_averaging_summary_{0}.xlsx'.format(formatted_date)
+    target_file = 'data/temp/{0}_{1}.xlsx'.format(file_prefix, formatted_date)
+    target_summary_file = 'data/temp/{0}_summary_{1}.xlsx'.format(file_prefix, formatted_date)
     os.makedirs(os.path.dirname(target_file), exist_ok=True)
     print('writing file {0}'.format(target_file))
     data.to_excel(target_file, engine='openpyxl')
-
     last_profit_percent_data = []
-
     for ticker in tickers:
         ticker_profit_percent = data[(ticker, 'Profit_%')].iloc[-1]
         last_profit_percent_data.append({'Ticker': ticker,
@@ -179,6 +181,4 @@ def run_unit_trading(tickers, start_date='1/1/2000'):
     print('running unit trading')
     daily_unit_trader = DailyUnitTrader()
     data = daily_unit_trader.calculate_strategy(tickers=tickers, start_date=start_date)
-    formatted_date = datetime.strptime(start_date, '%m/%d/%Y').strftime('%Y-%m-%d')
-    target_file = 'data/temp/daily_unit_trading_{0}.xlsx'.format(formatted_date)
-    data.to_excel(target_file, engine='openpyxl')
+    calculate_summary(data, start_date, tickers, 'daily_unit_trading')

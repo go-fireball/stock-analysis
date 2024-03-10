@@ -12,8 +12,7 @@ class DailyUnitTrader:
     def calculate_strategy(self, tickers, start_date: str = '01/01/2010'):
         price_data = self.__data_access.load_price(tickers, start_date=start_date)
         combined_data = self.__calculate_investment(price_data, tickers)
-        comparison_data = self.__save_profit_percent_to_excel(combined_data)
-        return comparison_data
+        return combined_data
 
     @staticmethod
     def __calculate_investment(price_data, tickers) -> pd.DataFrame:
@@ -35,15 +34,3 @@ class DailyUnitTrader:
         combined_data = pd.concat(data_frames, axis=1)
         combined_data.columns = pd.MultiIndex.from_tuples(combined_data.columns)  # Create a MultiIndex
         return combined_data
-
-    @staticmethod
-    def __save_profit_percent_to_excel(combined_data) -> pd.DataFrame:
-        comparison_data = pd.DataFrame(index=combined_data.index)
-        # Concatenate 'Profit %' for each ticker
-        for ticker in combined_data.columns.levels[0]:
-            # Extracting Profit % data
-            profit_percent_data = (combined_data[(ticker, Constants.TotalValue)] - combined_data[
-                (ticker, Constants.TotalCost)]) / \
-                                  combined_data[(ticker, Constants.TotalCost)] * 100
-            comparison_data[ticker] = profit_percent_data  # Adding to the comparison DataFrame
-        return comparison_data

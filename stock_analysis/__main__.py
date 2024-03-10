@@ -22,7 +22,7 @@ if __name__ == "__main__":
         data_loader.load_tickers(tickers)
         ticker_info(tickers)
     dollar_averaging(daily_investment_pairs=daily_investment_pairs, start_date=start_date)
-    dollar_averaging(daily_investment_pairs=daily_investment_pairs, start_date='1/1/2015')
+    dollar_averaging(daily_investment_pairs=daily_investment_pairs, start_date='1/1/2010')
     run_slice_trading(daily_investment_pairs=daily_investment_pairs,
                       slices=Config.get_slices(), rolling_window=7)
     run_unit_trading(tickers=tickers, start_date=start_date)
